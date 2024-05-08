@@ -1,0 +1,21 @@
+const express = require("express");
+const app = express();
+const connectDB = require("./config/db");
+const dotenv = require("dotenv").config();
+const cors = require("cors");
+import path from "path";
+const userRoutes = require("./routes/user.route");
+const authRoutes = require("./routes/auth.route");
+connectDB();
+const port = 5000;
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cors());
+app.use("/api/user", userRoutes);
+app.use("/api/auth", authRoutes);
+const public_path = path.join(__dirname, "../build");
+app.use(express.static(public_path));
+app.get("*", (_, res) => {
+  res.sendFile(path.join(public_path, "index.html"));
+});
+app.listen(port, () => console.log("le server a démaré au port " + port));
